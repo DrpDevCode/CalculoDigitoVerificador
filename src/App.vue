@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
-import { ElMessage } from 'element-plus';
-import { User, InfoFilled } from '@element-plus/icons-vue';
+import { ref } from 'vue'
 import type { FormConfig, Weights } from '@/composables/interfaces';
 
 import Navbar from '@/components/Navbar.vue';
 import Config from '@/components/Config.vue';
 import Weight from '@/components/Weight.vue';
 import Result from '@/components/Result.vue';
+import Footer from '@/components/Footer.vue';
 
 const formConfig = ref<FormConfig | null>(null);
 const weights = ref<Weights[]>([]);
@@ -18,7 +17,7 @@ const weights = ref<Weights[]>([]);
     <!-- Navbar -->
     <Navbar />
 
-    <div class="content-wrapper py-8 px-6">
+    <div class="content-wrapper py-8 px-6 mt-16">
       <div class="w-full mx-auto">
         <!-- Main Content Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
@@ -38,7 +37,9 @@ const weights = ref<Weights[]>([]);
           </div>
         </div>
       </div>
+      <Footer />
     </div>
+
   </div>
 </template>
 
@@ -58,7 +59,7 @@ const weights = ref<Weights[]>([]);
 }
 
 .result-section {
-  height: 875px !important;
+  height: 874px !important;
   overflow-y: auto;
 }
 </style>

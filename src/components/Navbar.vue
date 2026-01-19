@@ -1,51 +1,88 @@
 <script setup lang="ts">
-
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
-import { User, InfoFilled } from '@element-plus/icons-vue';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from '@/services/firebase';
+import LoginPopup from './LoginPopup.vue';
 
-const activeIndex = ref('1');
 const isLoggedIn = ref(false);
+const showLoginPopup = ref(false);
+const userEmail = ref('');
 
-const handleSelect = (key: string) => {
-    if (key === 'about') {
-        ElMessage.info('Sobre: Sistema de cálculo de dígito verificador para números de série');
-    }
-};
-
-const handleLogin = () => {
+const handleLoginClick = () => {
     if (isLoggedIn.value) {
-        isLoggedIn.value = false;
-        ElMessage.success('Logout realizado com sucesso');
+        handleLogout();
     } else {
-        isLoggedIn.value = true;
-        ElMessage.success('Login realizado com sucesso');
+        showLoginPopup.value = true;
     }
 };
+
+const handleLogout = async () => {
+    try {
+        await signOut(auth);
+        isLoggedIn.value = false;
+        userEmail.value = '';
+        ElMessage.success('Logout realizado com sucesso');
+    } catch (error) {
+        ElMessage.error('Erro ao fazer logout');
+    }
+};
+
+const handleLoginSuccess = () => {
+    // O estado de autenticação será atualizado pelo onAuthStateChanged
+};
+
+onMounted(() => {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            isLoggedIn.value = true;
+            userEmail.value = user.email || '';
+        } else {
+            isLoggedIn.value = false;
+            userEmail.value = '';
+        }
+    });
+});
 </script>
 
 <template>
-    <el-header class="navbar-header">
-        <div class="navbar-container">
-            <div class="navbar-left">
-                <h1 class="navbar-title">Cálculo de Dígito Verificador</h1>
+    <nav class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 shadow-sm z-50">
+        <div class="mx-auto px-6">
+            <div class="flex h-16 items-center justify-between">
+            
+            <!-- Nome do site -->
+            <div class="text-xl font-semibold text-gray-800">
+                Cálculo de Dígito Verificador
             </div>
-            <div class="navbar-right">
-                <el-menu :default-active="activeIndex" class="navbar-menu" mode="horizontal" @select="handleSelect">
-                    <el-menu-item index="about">
-                        <el-icon>
-                            <InfoFilled />
-                        </el-icon>
-                        <span>Sobre</span>
-                    </el-menu-item>
-                </el-menu>
-                <el-button :type="isLoggedIn ? 'success' : 'primary'" :icon="User" @click="handleLogin"
-                    class="login-button">
-                    {{ isLoggedIn ? 'Logout' : 'Login' }}
-                </el-button>
+
+            <!-- Botão de login/logout -->
+            <div class="flex items-center gap-3">
+                <span v-if="isLoggedIn" class="text-sm text-gray-600">
+                    {{ userEmail }}
+                </span>
+                <button
+                    @click="handleLoginClick"
+                    :class="[
+                        'rounded-lg px-4 py-2 text-sm font-medium text-white transition focus:outline-none focus:ring-2',
+                        isLoggedIn 
+                            ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' 
+                            : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
+                    ]"
+                >
+                    {{ isLoggedIn ? 'Sair' : 'Entrar' }}
+                </button>
+            </div>
+
+            <!-- Popup de Login -->
+            <LoginPopup 
+                v-model="showLoginPopup" 
+                @login-success="handleLoginSuccess"
+            />
+
             </div>
         </div>
-    </el-header>
+    </nav>
+
 </template>
 
 <style scoped>
