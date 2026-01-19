@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+/* Largura da barra */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+/* Fundo da barra */
+::-webkit-scrollbar-track {
+    background: #ffffff;
+    border-radius: 10px;
+}
+
+/* Parte que desliza */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+/* Hover no thumb */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
