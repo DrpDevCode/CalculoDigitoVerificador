@@ -97,7 +97,7 @@ watch(() => form.value, (newVal) => {
 
         <!-- Qtd Registers -->
         <el-form-item label="Quantidade de registros" class="mb-0 font-bold">
-          <el-input-number v-model="form.qtdRegisters" :min="1" :max="300" class="input-number w-full"
+          <el-input-number v-model="form.qtdRegisters" :min="1" :max="1000" class="input-number w-full"
             controls-position="right" placeholder="Digite a quantidade de registros" size="small" />
         </el-form-item>
 
