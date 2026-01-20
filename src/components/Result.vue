@@ -70,22 +70,22 @@ const downloadJson = () => {
         <div class="w-full flex-1 overflow-hidden" v-if="serialNumbers.length > 0">
             <el-table :data="serialNumbers" stripe class="modern-table w-full"
                 :empty-text="'Nenhum número gerado ainda'" height="100%">
-                <el-table-column prop="ordem" label="Ordem" align="left" header-align="left">
+                <el-table-column prop="ordem" label="Ordem" align="center" header-align="center">
                     <template #default="{ row }">
                         <span class="font-semibold text-gray-700">#{{ row.order }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="numeroSerie" label="Número de Série">
+                <el-table-column prop="numeroSerie" label="Número de Série" align="center" header-align="center">
                     <template #default="{ row }">
                         <span class="font-mono text-gray-800">{{ row.serialNumber }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="digitVerifier" label="Dígito Verificador">
+                <el-table-column prop="digitVerifier" label="Dígito Verificador" align="center" header-align="center">
                     <template #default="{ row }">
                         <span class="font-mono text-gray-800">{{ row.digitVerifier }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="serialNumberWithDigitVerifier" label="Número de Série com Dígito Verificador">
+                <el-table-column prop="serialNumberWithDigitVerifier" label="Número de Série com Dígito Verificador" align="center" header-align="center">
                     <template #default="{ row }">
                         <span class="font-mono text-gray-800">{{ row.serialNumberWithDigitVerifier }}</span>
                     </template>

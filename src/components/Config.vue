@@ -79,7 +79,7 @@ watch(() => form.value, (newVal) => {
       <div class="flex items-center gap-2">
         <span class="w-1 h-6 bg-blue-500 rounded-full"></span>
         <span class="text-xl font-semibold text-gray-800">Configurações</span>
-        <div class="text-end w-full">
+        <div class="ml-auto">
           <el-button type="primary" :disabled="!isLoggedIn" size="small" @click="$emit('open-saved-config')">
             <el-icon><Notebook /></el-icon>
           </el-button>
