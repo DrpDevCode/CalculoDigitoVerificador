@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Regras para a coleção 'configs'
+    match /configs/{configId} {
+      // Permite leitura apenas se o usuário estiver autenticado e for o dono da configuração
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+      
+      // Permite criação apenas se o usuário estiver autenticado e o userId corresponder ao usuário logado
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      
+      // Permite atualização apenas se o usuário estiver autenticado e for o dono da configuração
+      allow update: if request.auth != null && request.auth.uid == resource.data.userId;
+      
+      // Permite exclusão apenas se o usuário estiver autenticado e for o dono da configuração
+      allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+  }
+}

@@ -126,3 +126,38 @@ export function downloader(content: string): void {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
+export function downloadJsonFile(serialNumbers: SerialNumberData[]): void {
+  if (serialNumbers.length === 0) {
+    return;
+  }
+
+  // Criar objeto JSON com metadados e dados
+  const jsonData = {
+    metadata: {
+      generatedAt: new Date().toISOString(),
+      totalRecords: serialNumbers.length,
+      format: 'digit-verifier-export'
+    },
+    data: serialNumbers
+  };
+
+  // Converter para JSON formatado
+  const content = JSON.stringify(jsonData, null, 2);
+
+  // Criar blob e fazer download
+  const blob = new Blob([content], { type: 'application/json;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+
+  // Nome do arquivo com data/hora
+  const date = new Date();
+  const dateStr = date.toISOString().slice(0, 19).replace(/:/g, '-').replace('T', '_');
+  link.download = `numeros_serie_${dateStr}.json`;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}

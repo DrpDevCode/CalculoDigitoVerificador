@@ -27,3 +27,12 @@ export interface SerialNumberData {
     sum?: number;
     calcNumbers?: any[];
 }
+
+export interface Config {
+    id: string;
+    name: string;
+    formConfig: FormConfig;
+    weights: Weights[];
+    createdAt?: Date;
+    updatedAt?: Date;
+}

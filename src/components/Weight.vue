@@ -1,27 +1,96 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, nextTick } from 'vue';
 import type { Weights } from '@/composables/interfaces';
 
 const props = defineProps<{
     qtdNumbers: number;
+    modelValue?: Weights[];
 }>();
 
 const Weights = ref<Weights[]>([]);
+const isUpdatingFromParent = ref(false);
 
 const emit = defineEmits<{
     'update:modelValue': [Weights[]]
 }>();
 
-watch(Weights, (newVal) => {
-    emit('update:modelValue', newVal);
-}, { deep: true });
+// Função para comparar se dois arrays de Weights são iguais
+const isEqual = (a: Weights[], b: Weights[]): boolean => {
+    if (a.length !== b.length) return false;
+    return a.every((w, i) => {
+        const bItem = b[i];
+        if (!bItem) return false;
+        return w.position === bItem.position && w.weight === bItem.weight;
+    });
+};
 
-watch(() => props.qtdNumbers, (newVal) => {
-    Weights.value = Array.from({ length: newVal }, (_, i) => ({
-        position: i + 1,
-        weight: 1
-    }));
+// Função para atualizar os pesos
+const updateWeights = async () => {
+    // Se temos valores do pai com a quantidade correta, usar eles
+    if (props.modelValue && props.modelValue.length === props.qtdNumbers && props.qtdNumbers > 0) {
+        const newWeights = props.modelValue.map(w => ({ ...w }));
+        if (!isEqual(Weights.value, newWeights)) {
+            isUpdatingFromParent.value = true;
+            Weights.value = newWeights;
+            await nextTick();
+            isUpdatingFromParent.value = false;
+        }
+    } else if (props.qtdNumbers > 0) {
+        // Caso contrário, criar novos pesos baseados na quantidade
+        const newWeights = Array.from({ length: props.qtdNumbers }, (_, i) => {
+            // Tentar manter o peso existente se houver
+            const existingWeight = props.modelValue?.[i] ?? Weights.value[i];
+            return {
+                position: i + 1,
+                weight: existingWeight?.weight ?? 1
+            };
+        });
+        if (!isEqual(Weights.value, newWeights)) {
+            isUpdatingFromParent.value = true;
+            Weights.value = newWeights;
+            await nextTick();
+            isUpdatingFromParent.value = false;
+        }
+    } else {
+        if (Weights.value.length > 0) {
+            isUpdatingFromParent.value = true;
+            Weights.value = [];
+            await nextTick();
+            isUpdatingFromParent.value = false;
+        }
+    }
+};
+
+// Sincronizar com o valor do pai quando mudar
+watch(() => props.modelValue, async (newVal) => {
+    if (newVal && newVal.length > 0 && newVal.length === props.qtdNumbers) {
+        const newWeights = newVal.map(w => ({ ...w }));
+        if (!isEqual(Weights.value, newWeights)) {
+            isUpdatingFromParent.value = true;
+            Weights.value = newWeights;
+            await nextTick();
+            isUpdatingFromParent.value = false;
+        }
+    } else {
+        await updateWeights();
+    }
+}, { immediate: true, deep: true });
+
+// Atualizar quando a quantidade de números mudar
+watch(() => props.qtdNumbers, () => {
+    if (!isUpdatingFromParent.value) {
+        updateWeights();
+    }
 }, { immediate: true });
+
+// Emitir mudanças apenas quando não for atualização do pai
+watch(() => Weights.value, (newVal) => {
+    if (!isUpdatingFromParent.value) {
+        // Sempre emitir quando o usuário faz mudanças
+        // A comparação com modelValue é feita no watch do modelValue para evitar loops
+        emit('update:modelValue', newVal.map(w => ({ ...w })));
+    }
+}, { deep: true });
 
 const updateWeight = (index: number, value: number) => {
     const weight = Weights.value[index];

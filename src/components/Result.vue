@@ -3,7 +3,7 @@ import { ref, watch } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Download } from '@element-plus/icons-vue';
 import type { FormConfig, Weights } from '@/composables/interfaces';
-import { generateNumbers, downloadTxtFile, downloadTxtFileSimple } from '@/functions';
+import { generateNumbers, downloadTxtFile, downloadTxtFileSimple, downloadJsonFile } from '@/functions';
 
 const props = defineProps<{
     formConfig: FormConfig | null;
@@ -36,6 +36,15 @@ const downloadTxtSimple = () => {
     downloadTxtFileSimple(serialNumbers.value);
     ElMessage.success('Arquivo TXT gerado com sucesso!');
 };
+
+const downloadJson = () => {
+    if (serialNumbers.value.length === 0) {
+        ElMessage.warning('Não há dados para exportar');
+        return;
+    }
+    downloadJsonFile(serialNumbers.value);
+    ElMessage.success('Arquivo JSON gerado com sucesso!');
+};
 </script>
 
 <template>
@@ -52,6 +61,7 @@ const downloadTxtSimple = () => {
                     <template #dropdown>
                         <el-dropdown-menu>
                             <el-dropdown-item @click="downloadTxt">Baixar TXT Completo</el-dropdown-item>
+                            <el-dropdown-item @click="downloadJson">Baixar JSON</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>

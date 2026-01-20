@@ -9,6 +9,11 @@ const isLoggedIn = ref(false);
 const showLoginPopup = ref(false);
 const userEmail = ref('');
 
+const emit = defineEmits<{
+    'login-success': [];
+    'logout': [];
+}>();
+
 const handleLoginClick = () => {
     if (isLoggedIn.value) {
         handleLogout();
@@ -30,6 +35,7 @@ const handleLogout = async () => {
 
 const handleLoginSuccess = () => {
     // O estado de autenticação será atualizado pelo onAuthStateChanged
+    emit('login-success');
 };
 
 onMounted(() => {
@@ -37,9 +43,11 @@ onMounted(() => {
         if (user) {
             isLoggedIn.value = true;
             userEmail.value = user.email || '';
+            emit('login-success');
         } else {
             isLoggedIn.value = false;
             userEmail.value = '';
+            emit('logout');
         }
     });
 });
