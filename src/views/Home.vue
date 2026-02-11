@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { FormConfig, Weights } from '@/composables/interfaces';
+import { ref } from "vue";
+import type { FormConfig, Weights } from "@/composables/interfaces";
 
-import Config from '@/components/Config.vue';
-import Weight from '@/components/Weight.vue';
-import Result from '@/components/Result.vue';
-import Footer from '@/components/Footer.vue';
-import SavedConfig from '@/components/SavedConfig.vue';
+import Config from "@/components/Config.vue";
+import Weight from "@/components/Weight.vue";
+import Result from "@/components/Result.vue";
+import Footer from "@/components/Footer.vue";
+import SavedConfig from "@/components/SavedConfig.vue";
 
 defineProps<{
   isLoggedIn: boolean;
@@ -24,7 +24,7 @@ const handleLoadConfig = (config: { formConfig: FormConfig; weights: Weights[] }
 
 <template>
   <div class="content-wrapper py-8 px-6 mt-16">
-    <div class="w-full mx-auto">
+    <div class="w-350 mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
         <div class="lg:col-span-3 space-y-6">
           <Config
